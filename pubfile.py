@@ -43,3 +43,24 @@ if __name__ == "__main__":
     with open("C:/Users/NB/Documents/PythonProjects/output.html", "w") as f:
         f.write(html_table)
     print("\nHTML table generated!\n", html_table)
+
+df_pyspark=spark.read.csv('output.csv',header=True,inferSchema=True)
+df_pyspark.show()
+
+###========SECTION 4============
+##create a temporary view and give it a name
+df_pyspark.createOrReplaceTempView('vw_pubdec')
+
+##1. What is the count of responders per family income range (show all)?
+df_ = spark.sql('select count(HEFAMINC)family_income_range from vw_pubdec')
+df_.show()
+
+#3. How many responders do not have telephone in their house, but can access
+df_ = spark.sql("select count(*)telephone_access from vw_pubdec where HETELAVL = '1'")
+df_.show()
+
+#4. How many responders can access a telephone, but telephone interview is not accepted?
+df_ = spark.sql("select count(*)notelephone_interview from vw_pubdec where HEPHONEO = '0'")
+df_.show()
+
+
